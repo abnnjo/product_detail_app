@@ -4,6 +4,10 @@ from .config import DEBUG, DATABASE_URL, MIN_DB_CONN, MAX_DB_CONN
 from .urls import url_patterns
 from typing import AsyncGenerator
 from gino import create_engine
+from contextvars import ContextVar
+import time
+
+_engine = ContextVar("_engine")
 
 
 class DatabaseMiddleware:
@@ -22,14 +26,21 @@ async def on_startup():
     )
     return engine
 
+async def shutdown() -> None:
+    print("Shutdown Database")
+
+    try:
+        await _engine.get().close()
+    except AttributeError:
+        pass
 
 async def LifeSpanMiddleware(app) -> AsyncGenerator:
     engine = await on_startup()
     app.add_middleware(DatabaseMiddleware, engine=engine)
     yield
-    # await dbShutdown()
+    await shutdown()
 
-
+time.sleep(20)
 app = Starlette(debug=DEBUG, lifespan=LifeSpanMiddleware)
 
 
