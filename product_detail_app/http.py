@@ -11,7 +11,6 @@ from models.exceptions import ValidationError
 from importlib import import_module
 
 
-
 class BaseHTTPEndpoint(HTTPEndpoint):
     validated_data = {}
     handler_name = ""
@@ -54,12 +53,15 @@ class BaseHTTPEndpoint(HTTPEndpoint):
 
     async def get_database_api(self):
         from models.api.products_api import ProductAPI
+
         return ProductAPI(self.scope.get("database"))
 
     async def set_initial_data(self):
         self.api = await self.get_database_api()
         self.request = Request(self.scope, receive=self.receive)
-        self.handler_name = "get" if self.request.method == "HEAD" else self.request.method.lower()
+        self.handler_name = (
+            "get" if self.request.method == "HEAD" else self.request.method.lower()
+        )
         self.request_data = await self.get_request_data(self.request)
         self.product_id = self.request.path_params.get("productId")
 
@@ -82,7 +84,6 @@ class BaseHTTPEndpoint(HTTPEndpoint):
             validator_pkg = ".".join(validator_module)
             validator_method = getattr(import_module(validator_pkg), validator_class)
             self.validated_data = validator_method(**data).dict()
-
 
     async def get_success_response(self, response: Union[dict, list]) -> JSONResponse:
         data = {"status": "success", "data": response}

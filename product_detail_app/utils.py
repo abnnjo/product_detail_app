@@ -1,5 +1,6 @@
 from models.exceptions import ValidationError
 
+
 def get_filter_validated_data(request_data: dict, validated_data: dict) -> dict:
     """
     This function used to filter requested data

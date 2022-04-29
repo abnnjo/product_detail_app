@@ -11,7 +11,7 @@ DATABASE_NAME = config("DATABASE_NAME", default=None)
 DATABASE_PASSWORD = config("DATABASE_PASSWORD", default=None)
 DATABASE_PORT = config("DATABASE_PORT", cast=int, default=5432)
 DATABASE_URL = config("DATABASE_URL", default=None)
-MIN_DB_CONN = config("MIN_DB_CONN", default=5) 
+MIN_DB_CONN = config("MIN_DB_CONN", default=5)
 MAX_DB_CONN = config("MAX_DB_CONN", default=10)
 
 DATABASE_URL = URL(

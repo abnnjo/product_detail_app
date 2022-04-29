@@ -15,8 +15,11 @@ class DatabaseMiddleware:
         scope["database"] = self.engine
         await self.app(scope, receive, send)
 
+
 async def on_startup():
-    engine = await create_engine(DATABASE_URL, min_size=MIN_DB_CONN, max_size=MAX_DB_CONN)
+    engine = await create_engine(
+        DATABASE_URL, min_size=MIN_DB_CONN, max_size=MAX_DB_CONN
+    )
     return engine
 
 
@@ -26,11 +29,13 @@ async def LifeSpanMiddleware(app) -> AsyncGenerator:
     yield
     # await dbShutdown()
 
+
 app = Starlette(debug=DEBUG, lifespan=LifeSpanMiddleware)
 
 
 for url in url_patterns:
     app.add_route(url[0], url[1])
+
 
 @app.exception_handler(404)
 async def not_found(request, exc):
