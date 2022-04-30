@@ -40,7 +40,6 @@ async def LifeSpanMiddleware(app) -> AsyncGenerator:
     yield
     await shutdown()
 
-time.sleep(20)
 app = Starlette(debug=DEBUG, lifespan=LifeSpanMiddleware)
 
 
