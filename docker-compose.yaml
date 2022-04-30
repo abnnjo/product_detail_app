@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+    postgres:
+        image: postgres:11.4
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: pgpass
+            POSTGRES_DB: pgdata
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+
+    product_detail_app:
+        build:
+            context: .
+        ports:
+            - "8080:8080"
+        environment:
+            DATABASE_HOST: postgres
+            DATABASE_NAME: product
+            DATABASE_PASSWORD: pgpass
+            DATABASE_USER: postgres
+            DATABASE_PORT: 5432
+        depends_on:
+            - "postgres"
+volumes:
+    postgres_data:
